@@ -28,18 +28,23 @@ int main() {
 
     int n;
     while (true) {
+        bool found = false;
         cin >> n;
         if (n == 0)
             break;
-        for (int prime: primes) {
+        for (int i=1; i<primes.size(); ++i) {
+            int prime = primes[i];
             if (prime > n / 2) {
-                cout << "Goldbach's conjecture is wrong.\n";
                 break;
             }
             if (isPrime[n - prime]) {
                 cout << n << " = " << prime << " + " << n - prime << '\n';
+                found = true;
                 break;
             }
+        }
+        if (!found) {
+            cout << "Goldbach's conjecture is wrong.\n";
         }
     }
 }
