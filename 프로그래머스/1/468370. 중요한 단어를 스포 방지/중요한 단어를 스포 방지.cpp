@@ -1,13 +1,13 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 using namespace std;
 
 int solution(string message, vector<vector<int>> spoiler_ranges) {
     int answer = 0;
-    set<string> s;
+    unordered_set<string> s;
     
     string blinds = message;
     for (vector<int> range: spoiler_ranges) {
