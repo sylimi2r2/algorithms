@@ -1,49 +1,45 @@
 #include <iostream>
+
 using namespace std;
 
-int N;
-int S[20][20];
-bool visited[20] = {0,};
-int sol = 100000;
-
-void dfs(int num, int index) {
-    if(num == N/2) {
-        int start = 0, link = 0;
-
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<N; j++) {
-                if(visited[i] && visited[j])
-                    start += S[i][j];
-                else if(!visited[i] && !visited[j])
-                    link += S[i][j];
-            }
-        }
-
-        sol = min(sol, abs(start-link));
-
-        return;
-    }
-
-    for(int i=index; i<N; i++) {
-        visited[i] = true;
-        dfs(num+1, i+1);
-        visited[i] = false;
-    }
-}
-
 int main() {
-    ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
+    int N;
+    int S[20][20];
     cin >> N;
-    for(int i=0; i<N; i++) {
-        for(int j=0; j<N; j++) {
+    for (int i=0; i<N; ++i) {
+        for (int j=0; j<N; ++j) {
             cin >> S[i][j];
         }
     }
 
-    dfs(0, 0);
+    int ans = 987654321;
 
-    cout << sol;
+    for (int mask=1; mask<(1 << N); ++mask) {
+        if (__builtin_popcount(mask) != N/2)
+            continue;
+
+        int start = 0;
+        int link = 0;
+
+        for (int i=0; i<N; ++i) {
+            for (int j=i+1; j<N; ++j) {
+                bool isStartI = mask & (1 << i);
+                bool isStartJ = mask & (1 << j);
+
+                if (isStartI && isStartJ) {
+                    start += S[i][j] + S[j][i];
+                }
+                else if (!isStartI && !isStartJ) {
+                    link += S[i][j] + S[j][i];
+                }
+            }
+        }
+
+        ans = min(ans, abs(start - link));
+    }
+
+    cout << ans;
 }
