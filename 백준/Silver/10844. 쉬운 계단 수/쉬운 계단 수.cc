@@ -1,37 +1,34 @@
 #include <iostream>
+
 using namespace std;
 
-#define MOD 1000000000
+const int MOD = 1'000'000'000;
 
 int main() {
-    ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
-    int dp[101][10] = {0,};
     int N;
     cin >> N;
 
-    for(int i=1; i<10; i++) {
-        dp[1][i] = 1;
-    }
+    int prev[10] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    int cur[10] = {0};
+    for (int i=2; i<=N; ++i) {
+        cur[0] = prev[1];
+        cur[9] = prev[8];
+        for (int j=1; j<=8; ++j) {
+            cur[j] = (prev[j - 1] + prev[j + 1]) % MOD;
+        }
 
-    for(int i=2; i<=N; i++) {
-        for(int j=0; j<10; j++) {
-            if(j == 0)
-                dp[i][j] = dp[i-1][1];
-            else if(j == 9)
-                dp[i][j] = dp[i-1][8];
-            else
-                dp[i][j] = dp[i-1][j-1] + dp[i-1][j+1];
-            dp[i][j] %= MOD;
+        for (int j=0; j<=9; ++j) {
+            prev[j] = cur[j];
         }
     }
 
-    int sum = 0;
-    for(int i=0; i<10; i++) {
-        sum = (sum + dp[N][i]) % MOD;
+    int ans = 0;
+    for (int i=0; i<=9; ++i) {
+        ans = (ans + prev[i]) % MOD;
     }
 
-    cout << sum;
+    cout << ans;
 }
