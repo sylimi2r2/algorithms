@@ -1,32 +1,30 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
 
-    int N, sol=1;
-    int dp[1000] = {0,};
-    vector<int> nums;
+int main() {
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+
+    int N;
     cin >> N;
-    for(int i=0; i<N; i++) {
+
+    vector<int> LIS;
+    for (int i=0; i<N; ++i) {
         int input;
         cin >> input;
-        nums.push_back(input);
-        dp[i] = 1;
-    }
 
-    for(int i=1; i<N; i++) {
-        for(int j=i-1; j>=0; j--) {
-            if(nums[i] > nums[j]) {
-                dp[i] = max(dp[i], dp[j]+1);
-            }
+        auto it = lower_bound(LIS.begin(), LIS.end(), input);
+
+        if (it == LIS.end()) {
+            LIS.push_back(input);
+        } else {
+            *it = input;
         }
-        if(dp[i] > sol)
-            sol = dp[i];
     }
 
-    cout << sol;
+    cout << LIS.size();
 }
