@@ -1,19 +1,26 @@
 #include <iostream>
+
 using namespace std;
 
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
-  pair<long long, long long> dp[91];
-  dp[1] = {0, 1};
-  int N;
-  cin >> N;
+    int N;
+    cin >> N;
 
-  for(int i=2; i<=N; i++) {
-    dp[i] = {dp[i-1].first+dp[i-1].second, dp[i-1].first};
-  }
+    if (N == 1 || N == 2) {
+        cout << 1;
+        return 0;
+    }
 
-  cout << (dp[N].first+dp[N].second);
+    long long cur;
+    long long prev1 = 1, prev2 = 1;
+    for (int i=3; i<=N; ++i) {
+        cur = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = cur;
+    }
+
+    cout << cur;
 }
