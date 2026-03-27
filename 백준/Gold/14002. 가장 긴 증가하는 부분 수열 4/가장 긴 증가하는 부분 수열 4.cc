@@ -1,51 +1,53 @@
 #include <iostream>
 #include <vector>
-#include <stack>
 #include <algorithm>
+
 using namespace std;
 
-int N;
-int A[1000];
-int indexes[1000];
-vector<int> dp;
-
 int main() {
-    ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
+    int N;
     cin >> N;
 
-
-    int index;
-    for(int i=0; i<N; i++) {
+    vector<int> A(N);
+    for (int i=0; i<N; ++i) {
         cin >> A[i];
+    }
 
-        if(dp.empty() || dp.back() < A[i]) {
-            dp.push_back(A[i]);
-            index = i;
-            indexes[i] = dp.size()-1;
+    vector<int> tails;
+    vector<int> indexes;
+    vector<int> parent(N, -1);
+    for (int i=0; i<N; ++i) {
+        int x = A[i];
+
+        int pos = lower_bound(tails.begin(), tails.end(), x) - tails.begin();
+
+        if (pos > 0) {
+            parent[i] = indexes[pos - 1];
+        }
+
+        if (pos == tails.size()) {
+            tails.push_back(x);
+            indexes.push_back(i);
         }
         else {
-            int lBound = lower_bound(dp.begin(), dp.end(), A[i]) - dp.begin();
-            dp[lBound] = A[i];
-            indexes[i] = lBound;
+            tails[pos] = x;
+            indexes[pos] = i;
         }
     }
 
-    cout << dp.size() << '\n';
-
-    stack<int> sol;
-    sol.push(A[index]);
-    for(int i=index-1; i>=0; i--) {
-        if(indexes[index]-1 == indexes[i]) {
-            sol.push(A[i]);
-            index = i;
-        }
+    int length = tails.size();
+    vector<int> LIS(length);
+    int cur = indexes[length - 1];
+    for (int i=length-1; i>=0; --i) {
+        LIS[i] = A[cur];
+        cur = parent[cur];
     }
 
-    while(!sol.empty()) {
-        cout << sol.top() << ' ';
-        sol.pop();
+    cout << length << '\n';
+    for (int x: LIS) {
+        cout << x << ' ';
     }
 }
