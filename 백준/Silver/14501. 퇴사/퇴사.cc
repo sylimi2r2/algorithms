@@ -1,23 +1,27 @@
 #include <iostream>
+
 using namespace std;
 
+int dp[17];
+
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
-  int dp[21] = {0, };
-  int N, MAX = 0;
-  cin >> N;
+    int N;
+    cin >> N;
 
-  for(int i=1; i<=N; i++) {
-    int T, P;
-    cin >> T >> P;
-    dp[i] = max(dp[i], MAX);
-    dp[i+T] = max(dp[i+T], dp[i]+P);
-    MAX = max(MAX, dp[i]);
-  }
-  MAX = max(MAX, dp[N+1]);
+    for (int i=1; i<=N; ++i) {
+        int period, price;
+        cin >> period >> price;
 
-  cout << MAX;
+        dp[i] = max(dp[i], dp[i - 1]);
+        int fin = i + period;
+        if (fin <= N + 1) {
+            dp[fin] = max(dp[fin], dp[i] + price);
+        }
+    }
+    dp[N + 1] = max(dp[N + 1], dp[N]);
+
+    cout << dp[N + 1];
 }
