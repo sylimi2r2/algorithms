@@ -5,6 +5,24 @@ using namespace std;
 const int MOD = 1'000'000'000;
 int dp[201][201];
 
+int sol(int n, int k) {
+    int &ret = dp[n][k];
+
+    if (ret != -1)
+        return ret;
+
+    if (n == 0 || k == 1)
+        return ret = 1;
+
+    ret = 0;
+
+    for (int i=0; i<=n; ++i) {
+        ret = (ret + sol(n - i, k - 1)) % MOD;
+    }
+
+    return ret;
+}
+
 int main() {
     cin.tie(nullptr);
     ios_base::sync_with_stdio(false);
@@ -12,18 +30,7 @@ int main() {
     int N, K;
     cin >> N >> K;
 
-    for (int k=0; k<=K; ++k) {
-        dp[0][k] = 1;
-    }
-    for (int n=0; n<=N; ++n) {
-        dp[n][1] = 1;
-    }
+    fill(*dp, *dp + 201 * 201, -1);
 
-    for (int n=1; n<=N; ++n) {
-        for (int k=2; k<=K; ++k) {
-            dp[n][k] = (dp[n][k - 1] + dp[n - 1][k]) % MOD;
-        }
-    }
-
-    cout << dp[N][K];
+    cout << sol(N, K);
 }
