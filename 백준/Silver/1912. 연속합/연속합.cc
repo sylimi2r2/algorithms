@@ -1,20 +1,22 @@
 #include <iostream>
+
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+int dp[100001];
 
-    int dp[100001] = {0,};
-    int n, sol=-1000;
+int main() {
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+
+    int n;
     cin >> n;
 
-    for(int i=1; i<=n; i++) {
+    int ans = -1001;
+    for (int i=1; i<=n; ++i) {
         cin >> dp[i];
-        dp[i] = max(dp[i], dp[i]+dp[i-1]);
-        sol = max(sol, dp[i]);
+        dp[i] += max(0, dp[i - 1]);
+        ans = max(ans, dp[i]);
     }
 
-    cout << sol;
+    cout << ans;
 }
