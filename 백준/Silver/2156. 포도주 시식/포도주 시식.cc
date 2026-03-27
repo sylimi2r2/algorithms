@@ -1,26 +1,26 @@
 #include <iostream>
+
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+int v[10001];
+int dp[10001];
 
-    int w[10001] = {0,};
-    int dp[10001] = {0,};
+int main() {
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+
     int n;
     cin >> n;
 
-    for(int i=1; i<=n; i++) {
-        cin >> w[i];
+    for (int i=1; i<=n; ++i) {
+        cin >> v[i];
     }
 
-    dp[1] = w[1];
-    dp[2] = w[1]+w[2];
-
-    for(int i=3; i<=n; i++) {
-        dp[i] = w[i] + max(w[i-1]+dp[i-3], dp[i-2]);
-        dp[i] = max(dp[i-1], dp[i]);
+    dp[1] = v[1];
+    dp[2] = v[1] + v[2];
+    for (int i=3; i<=n; ++i) {
+        dp[i] = v[i] + max(dp[i - 3] + v[i - 1], dp[i - 2]);
+        dp[i] = max(dp[i], dp[i - 1]);
     }
 
     cout << dp[n];
