@@ -1,41 +1,44 @@
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
 int N, M;
-vector<int> friendship[2001];
-bool visited[2001] = {0,};
+vector<vector<int>> relations;
+vector<bool> visited;
 
-void dfs(int size, int cur) {
-    if(size == 5) {
+void dfs(int cnt, int cur) {
+    if (cnt == 5) {
         cout << 1;
         exit(0);
     }
-    for(int next : friendship[cur]) {
-        if(visited[next])
-            continue;
 
-        visited[next] = true;
-        dfs(size+1, next);
-        visited[next] = false;
+    for (int next: relations[cur]) {
+        if (!visited[next]) {
+            visited[next] = true;
+            dfs(cnt + 1, next);
+            visited[next] = false;
+        }
     }
 }
 
 int main() {
-    ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
 
     cin >> N >> M;
-    while(M--) {
+
+    relations = vector<vector<int>>(N);
+    visited = vector<bool>(N, false);
+    for (int i=0; i<M; ++i) {
         int a, b;
         cin >> a >> b;
 
-        friendship[a].push_back(b);
-        friendship[b].push_back(a);
+        relations[a].push_back(b);
+        relations[b].push_back(a);
     }
 
-    for(int i=0; i<N; i++) {
+    for (int i=0; i<N; ++i) {
         visited[i] = true;
         dfs(1, i);
         visited[i] = false;
