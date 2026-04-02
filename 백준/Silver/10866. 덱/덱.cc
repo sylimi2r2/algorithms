@@ -1,106 +1,73 @@
 #include <iostream>
+
 using namespace std;
 
-typedef struct _deque {
-    int front;
-    int back;
-    int deque[20001];
-} Deque;
+int deq[20001];
+int head = 10000;
+int tail = 10000;
 
-void dequeInit(Deque * dq) {
-    dq->front = 10000;
-    dq->back = 10000;
-}
-
-int isEmpty(Deque * dq) {
-    if(dq->front == dq->back)
-        return 1;
-    else
-        return 0;
-}
-
-void push_front(Deque * dq, int data) {
-    dq->deque[--dq->front] = data;
-}
-
-void push_back(Deque * dq, int data) {
-    dq->deque[dq->back++] = data;
-}
-
-int pop_front(Deque * dq) {
-    if(isEmpty(dq))
-        return -1;
-
-    return dq->deque[dq->front++];
-}
-
-int pop_back(Deque * dq) {
-    if(isEmpty(dq))
-        return -1;
-
-    return dq->deque[--dq->back];
-}
-
-int size(Deque * dq) {
-    return dq->back - dq->front;
-}
-
-int front(Deque * dq) {
-    if(isEmpty(dq))
-        return -1;
-
-    return dq->deque[dq->front];
-}
-
-int back(Deque * dq) {
-    if(isEmpty(dq))
-        return -1;
-
-    return dq->deque[dq->back-1];
+int size() {
+    return tail - head;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    Deque dq;
-    dequeInit(&dq);
+    ios_base::sync_with_stdio(false);
 
     int N;
     cin >> N;
 
-    while(N--) {
-        string cmd;
-        cin >> cmd;
+    while (N--) {
+        string command;
+        cin >> command;
 
-        if(cmd == "push_front") {
-            int data;
-            cin >> data;
-            push_front(&dq, data);
+        if (command == "pop_front") {
+            cout << (size() ? deq[head++] : -1) << '\n';
+
+            continue;
         }
-        else if(cmd == "push_back") {
-            int data;
-            cin >> data;
-            push_back(&dq, data);
+
+        if (command == "pop_back") {
+            cout << (size() ? deq[--tail] : -1) << '\n';
+
+            continue;
         }
-        else if(cmd == "pop_front") {
-            cout << pop_front(&dq) << '\n';
+
+        if (command == "size") {
+            cout << size() << '\n';
+
+            continue;
         }
-        else if(cmd == "pop_back") {
-            cout << pop_back(&dq) << '\n';
+
+        if (command == "empty") {
+            cout << (size() ? 0 : 1) << '\n';
+
+            continue;
         }
-        else if(cmd == "size") {
-            cout << size(&dq) << '\n';
+
+        if (command == "front") {
+            cout << (size() ? deq[head] : -1) << '\n';
+
+            continue;
         }
-        else if(cmd == "empty") {
-            cout << isEmpty(&dq) << '\n';
+
+        if (command == "back") {
+            cout << (size() ? deq[tail - 1] : -1) << '\n';
+
+            continue;
         }
-        else if(cmd == "front") {
-            cout << front(&dq) << '\n';
+
+        int X;
+        cin >> X;
+
+        if (command == "push_front") {
+            deq[--head] = X;
+
+            continue;
         }
-        else if(cmd == "back") {
-            cout << back(&dq) << '\n';
+
+        if (command == "push_back") {
+            deq[tail++] = X;
         }
     }
 }
