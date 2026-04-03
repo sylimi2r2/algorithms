@@ -33,26 +33,28 @@ int main() {
 
         bool isBipartite = true;
         queue<int> q;
+
         for (int i=1; i<=V && isBipartite; ++i) {
-            if (state[i] == 0) {
-                state[i] = 1;
-                q.push(i);
+            if (state[i] != 0)
+                continue;
 
-                while (!q.empty() && isBipartite) {
-                    int cur = q.front();
-                    q.pop();
+            state[i] = 1;
+            q.push(i);
 
-                    for (int next: graph[cur]) {
-                        if (state[next] == 0) {
-                            state[next] = -state[cur];
-                            q.push(next);
-                            continue;
-                        }
+            while (!q.empty() && isBipartite) {
+                int cur = q.front();
+                q.pop();
 
-                        if (state[next] == state[cur]) {
-                            isBipartite = false;
-                            break;
-                        }
+                for (int next: graph[cur]) {
+                    if (state[next] == 0) {
+                        state[next] = -state[cur];
+                        q.push(next);
+                        continue;
+                    }
+
+                    if (state[next] == state[cur]) {
+                        isBipartite = false;
+                        break;
                     }
                 }
             }
