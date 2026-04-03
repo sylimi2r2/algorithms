@@ -1,59 +1,62 @@
 #include <iostream>
 #include <queue>
+
 using namespace std;
 
+struct State {
+    int x, y, d;
+};
+
 bool visited[300][300];
-int l, sol;
-pair<int, int> start, dest;
-pair<int, int> directions[8] = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2},
-                                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
-
-
-void bfs() {
-  queue<pair<pair<int, int>, int>> q;
-  q.push({start, 0});
-
-  while(!q.empty()) {
-    pair<int, int> current = q.front().first;
-    int moves = q.front().second;
-    if(current == dest) {
-      sol = moves;
-      return;
-    }
-    q.pop();
-    for(pair<int, int> d : directions) {
-      pair<int, int> next = {current.first+d.first, current.second+d.second};
-      if(next.first<l && next.first>=0 &&
-         next.second<l && next.second>=0) {
-        if(!visited[next.first][next.second]) {
-          q.push({next, moves+1});
-          visited[next.first][next.second] = true;
-        }
-      }
-    }
-  }
-}
+pair<int, int> dir[8] = {{1, -2},{2, -1},
+                         {2, 1},{1, 2},
+                         {-1, 2},{-2, 1},
+                         {-2, -1},{-1, -2}};
 
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-  int T;
-  cin >> T;
+    int T;
+    cin >> T;
 
-  while(T--) {
-    cin >> l;
-    cin >> start.first >> start.second;
-    cin >> dest.first >> dest.second;
+    while (T--) {
+        int l;
+        int sx, sy;
+        int tx, ty;
+        cin >> l;
+        cin >> sx >> sy;
+        cin >> tx >> ty;
 
-    for(int i=0; i<l; i++)
-      for(int j=0; j<l; j++)
-        visited[i][j] = false;
-    sol = 0;
+        for (int i=0; i<l; ++i) {
+            for (int j=0; j<l; ++j) {
+                visited[i][j] = false;
+            }
+        }
 
-    bfs();
+        queue<State> q;
+        visited[sx][sy] = true;
+        q.push({sx, sy, 0});
 
-    cout << sol << '\n';
-  }
+        while (!q.empty()) {
+            auto [x, y, d] = q.front();
+            q.pop();
+
+            if (x == tx && y == ty) {
+                cout << d << '\n';
+                break;
+            }
+
+            for (auto [dx, dy]: dir) {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if (nx < 0 || nx >= l || ny < 0 || ny >= l) continue;
+                if (visited[nx][ny]) continue;
+
+                visited[nx][ny] = true;
+                q.push({nx, ny, d + 1});
+            }
+        }
+    }
 }
