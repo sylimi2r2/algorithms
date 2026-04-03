@@ -1,62 +1,56 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+
 using namespace std;
 
-vector<vector<int>> box;
-queue<pair<int, int>> q;
 int M, N;
+int storage[1000][1000];
+pair<int, int> dir[4] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-void bfs() {
-    vector<pair<int, int>> direction = {{0, 1}, {0, -1},
-                                        {1, 0}, {-1, 0}};
-    int currentX, currentY, nextX, nextY;
-    while(!q.empty()) {
-            currentX = q.front().first;
-            currentY = q.front().second;
-            q.pop();
-        for(auto d : direction) {
-            nextX = currentX + d.first;
-            nextY = currentY + d.second;
-            if(nextX>=0 && nextX<N && nextY>=0 && nextY<M && box[nextX][nextY]==0) {
-                box[nextX][nextY] = box[currentX][currentY] + 1;
-                q.push({nextX, nextY});
+int main() {
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+
+    queue<pair<int, int>> q;
+
+    cin >> M >> N;
+    for (int i=0; i<N; ++i) {
+        for (int j=0; j<M; ++j) {
+            cin >> storage[i][j];
+
+            if (storage[i][j] == 1) {
+                q.push({i, j});
             }
         }
     }
-}
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+    while (!q.empty()) {
+        auto [x, y] = q.front();
+        q.pop();
 
-    cin >> M >> N;
-    for(int n=0; n<N; n++) {
-        vector<int> row;
-        for(int m=0; m<M; m++) {
-            int input;
-            cin >> input;
-            row.push_back(input);
-            if(input == 1)
-                q.push({n, m});
+        for (auto [dx, dy]: dir) {
+            int nx = x + dx;
+            int ny = y + dy;
+
+            if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+            if (storage[nx][ny] != 0) continue;
+
+            storage[nx][ny] = storage[x][y] + 1;
+            q.push({nx, ny});
         }
-        box.push_back(row);
     }
 
-    bfs();
-
-    int maximum = 0;
-    for(vector<int> &row : box) {
-        for(int &tomato : row) {
-            if(tomato == 0) {
+    int ans = -1;
+    for (int i=0; i<N; ++i) {
+        for (int j=0; j<M; ++j) {
+            if (storage[i][j] == 0) {
                 cout << -1;
                 return 0;
             }
-            maximum = max(maximum, tomato);
+            ans = max(ans, storage[i][j]);
         }
     }
 
-    cout << maximum-1;
-    return 0;
+    cout << ans - 1;
 }
