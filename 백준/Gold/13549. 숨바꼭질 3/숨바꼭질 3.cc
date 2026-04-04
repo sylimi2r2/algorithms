@@ -1,45 +1,50 @@
 #include <iostream>
-#include <queue>
+#include <deque>
+
 using namespace std;
 
-int N, K;
-int visited[100001] = {0,};
+struct State {
+    int x, t;
+};
 
-void dijkstra() {
-    priority_queue<pair<int, int>> pq;
-    pq.push({0, N});
-
-    while(!pq.empty()) {
-        int curNode = pq.top().second;
-        int curCost = -pq.top().first;
-        pq.pop();
-        if(curNode == K) {
-            cout << curCost;
-            return;
-        }
-        if(visited[curNode])
-            continue;
-        else
-            visited[curNode] = true;
-
-        int next1 = curNode+1;
-        int next2 = curNode-1;
-        int next3 = 2*curNode;
-        if(next1<=100000 && !visited[next1])
-            pq.push({-curCost-1, next1});
-        if(next2>=0 && !visited[next2])
-            pq.push({-curCost-1, next2});
-        if(next3<=100000 && !visited[next3])
-            pq.push({-curCost, next3});
-    }
-}
+bool visited[150001];
 
 int main() {
-    ios::sync_with_stdio(false);
+    ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
 
+    int N, K;
     cin >> N >> K;
 
-    dijkstra();
+    deque<State> dq;
+    visited[N] = true;
+    dq.push_back({N, 0});
+
+    while (!dq.empty()) {
+        auto [x, t] = dq.front();
+        dq.pop_front();
+
+        if (x == K) {
+            cout << t;
+            break;
+        }
+
+        int nx = 2 * x;
+        if (nx > 0 && nx <= 150000 && !visited[nx]) {
+            visited[nx] = true;
+            dq.push_front({nx, t});
+        }
+
+        nx = x - 1;
+        if (nx >= 0 && nx <= 150000 && !visited[nx]) {
+            visited[nx] = true;
+            dq.push_back({nx, t + 1});
+        }
+
+        nx = x + 1;
+        if (nx <= K && !visited[nx]) {
+            visited[nx] = true;
+            dq.push_back({nx, t + 1});
+        }
+    }
 }
