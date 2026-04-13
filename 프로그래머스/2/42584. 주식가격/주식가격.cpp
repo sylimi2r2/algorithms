@@ -7,21 +7,21 @@ using namespace std;
 vector<int> solution(vector<int> prices) {
     int N = prices.size();
     vector<int> answer(N);
-    stack<pair<int, int>> s;
+    stack<int> s;
     
     for (int i=0; i<prices.size(); ++i) {
         int price = prices[i];
         while (!s.empty()) {
-            if (price < s.top().first) {
-                answer[s.top().second] = i - s.top().second;
+            if (price < prices[s.top()]) {
+                answer[s.top()] = i - s.top();
                 s.pop();
             } else break;
         }
-        s.push({prices[i], i});
+        s.push(i);
     }
     
     while (!s.empty()) {
-        answer[s.top().second] = N - s.top().second - 1;
+        answer[s.top()] = N - s.top() - 1;
         s.pop();
     }
     
