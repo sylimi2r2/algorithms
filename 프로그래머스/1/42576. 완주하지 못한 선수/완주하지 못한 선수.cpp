@@ -7,7 +7,7 @@ using namespace std;
 string solution(vector<string> participant, vector<string> completion) {
     unordered_map<string, int> m;
     
-    for (string c: completion) {
+    for (string& c: completion) {
         auto it = m.find(c);
         
         if (it == m.end()) {
@@ -17,17 +17,17 @@ string solution(vector<string> participant, vector<string> completion) {
         }
     }
     
-    for (string p: participant) {
+    for (string& p: participant) {
         auto it = m.find(p);
         
         if (it == m.end()) {
             return p;
         }
-        
-        if (it != m.end()) {
-            if (--it->second < 0) {
-                return p;
-            }
+
+        if (it->second > 0) {
+            --it->second;
+        } else {
+            return p;
         }
     }
 }
