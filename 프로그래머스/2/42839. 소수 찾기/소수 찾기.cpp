@@ -1,54 +1,36 @@
 #include <string>
 #include <vector>
-#include <unordered_set>
-#include <cmath>
+#include <set>
+#include <algorithm>
 
 using namespace std;
 
-unordered_set<int> nums;
-int cnt[10] = {0, };
-
 bool isPrime(int num) {
-    if (num == 0 || num == 1)
+    if (num < 2)
         return false;
     
-    for (int i=2; i<=sqrt(num); ++i) {
+    for (int i=2; i*i<=num; ++i) {
         if (num % i == 0)
             return false;
     }
+    
     return true;
 }
 
-void combineNums(int cur, bool started) {
-    if (started)
-        nums.insert(cur);
-    
-    for (int i=0; i<10; ++i) {
-        if (cnt[i]) {
-            --cnt[i];
-            if (!started && i == 0) {
-                combineNums(0, true);
-            }
-            else {
-                combineNums(cur * 10 + i, true);
-            }
-            ++cnt[i];
-        }
-    }
-}
-
 int solution(string numbers) {
-    int answer = 0;
+    set<int> primes;
     
-    for (char n: numbers) {
-        ++cnt[n - '0'];
-    }
-    combineNums(0, false);
+    sort(numbers.begin(), numbers.end());
     
-    for (int num: nums) {
-        if (isPrime(num))
-            ++answer;
-    }
+    do {
+        for (int l=1; l<=numbers.size(); ++l) {
+            int num = stoi(numbers.substr(0, l));
+                
+            if (isPrime(num)) {
+               primes.insert(num); 
+            }
+        }
+    } while (next_permutation(numbers.begin(), numbers.end()));
     
-    return answer;
+    return primes.size();
 }
