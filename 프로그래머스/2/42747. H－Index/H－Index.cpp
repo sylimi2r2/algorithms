@@ -5,14 +5,17 @@
 using namespace std;
 
 int solution(vector<int> citations) {
-    int n = citations.size();
-    sort(citations.begin(), citations.end());
+    int answer = 0;
     
-    for (int i=0; i<n; ++i) {
-        int h = n - i;
-        if (h <= citations[i])
-            return h;
+    sort(citations.begin(), citations.end(), greater<int>());
+    
+    for (int i=0; i<citations.size(); ++i) {
+        if (citations[i] >= i + 1) {
+            answer = i + 1;
+        } else {
+            break;
+        }
     }
     
-    return 0;
+    return answer;
 }
