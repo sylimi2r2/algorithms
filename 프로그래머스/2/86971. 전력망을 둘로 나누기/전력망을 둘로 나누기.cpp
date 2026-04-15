@@ -3,37 +3,39 @@
 
 using namespace std;
 
-vector<vector<int>> graph;
-vector<int> subSize;
+vector<vector<int>> neighbors;
+vector<int> subTreeSize;
 
 int dfs(int cur, int parent) {
-    int &ret = subSize[cur];
+    int& ret = subTreeSize[cur];
     
     ret = 1;
     
-    for (int next: graph[cur]) {
-        if (next == parent) continue;
-        ret += dfs(next, cur);
+    for (int& neighbor: neighbors[cur]) {
+        if (neighbor != parent) {
+            ret += dfs(neighbor, cur);
+        }
     }
     
     return ret;
 }
 
 int solution(int n, vector<vector<int>> wires) {
-    graph.assign(n + 1, {});
-    subSize.assign(n + 1, 0);
+    neighbors.assign(n + 1, vector<int>());
+    subTreeSize.assign(n + 1, 0);
     
-    for (auto& wire: wires) {
-        int v1 = wire[0], v2 = wire[1];
-        graph[v1].push_back(v2);
-        graph[v2].push_back(v1);
+    for (vector<int>& wire: wires) {
+        int v1 = wire[0];
+        int v2 = wire[1];
+        neighbors[v1].push_back(v2);
+        neighbors[v2].push_back(v1);
     }
     
     dfs(1, 0);
     
     int answer = n;
-    for (int node=2; node<=n; ++node) {
-        answer = min(answer, abs(n - 2 * subSize[node]));
+    for (int i=2; i<=n; ++i) {
+        answer = min(answer, abs(n - 2 * subTreeSize[i]));
     }
     
     return answer;
