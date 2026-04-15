@@ -15,4 +15,6 @@ vector<int> solution(int brown, int yellow) {
         --w;
         ++h;
     }
+    
+    return {-1, -1};
 }
