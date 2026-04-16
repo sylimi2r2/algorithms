@@ -1,6 +1,5 @@
 #include <vector>
 #include <queue>
-#include <tuple>
 
 using namespace std;
 
@@ -13,18 +12,18 @@ int solution(vector<vector<int>> maps)
     int n = maps.size();
     int m = maps[0].size();
     
-    vector<vector<bool>> visited(n, vector<bool>(m, false));
+    vector<vector<int>> dist(n, vector<int>(m, 0));
     
-    queue<tuple<int, int, int>> q;
-    q.push({0, 0, 1});
-    visited[0][0] = true;
+    queue<pair<int, int>> q;
+    q.push({0, 0});
+    dist[0][0] = 1;
     
     while (!q.empty()) {
-        auto [curX, curY, curD] = q.front();
+        auto [curX, curY] = q.front();
         q.pop();
         
         if (curX == n - 1 && curY == m - 1) {
-            return curD;
+            return dist[curX][curY];
         }
         
         for (auto [dx, dy]: directions) {
@@ -32,10 +31,10 @@ int solution(vector<vector<int>> maps)
             int nextY = curY + dy;
             
             if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= m) continue;
-            if (maps[nextX][nextY] == 0 || visited[nextX][nextY]) continue;
+            if (maps[nextX][nextY] == 0 || dist[nextX][nextY] != 0) continue;
             
-            q.push({nextX, nextY, curD + 1});
-            visited[nextX][nextY] = true;
+            q.push({nextX, nextY});
+            dist[nextX][nextY] = dist[curX][curY] + 1;
         }
     }
     
