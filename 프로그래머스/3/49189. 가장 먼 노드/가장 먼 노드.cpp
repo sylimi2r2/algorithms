@@ -8,7 +8,7 @@ int solution(int n, vector<vector<int>> edge) {
     int answer = 0;
     
     vector<vector<int>> neighbors(n + 1);
-    for (vector<int>& e: edge) {
+    for (const vector<int>& e: edge) {
         neighbors[e[0]].push_back(e[1]);
         neighbors[e[1]].push_back(e[0]);
     }
