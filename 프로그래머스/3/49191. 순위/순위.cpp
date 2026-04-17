@@ -3,38 +3,34 @@
 
 using namespace std;
 
-int dfs(int cur, vector<vector<int>>& graph, vector<bool>& visited) {
-    int cnt = 0;
-    
-    for (int next: graph[cur]) {
-        if (visited[next]) continue;
-        
-        visited[next] = true;
-        cnt += 1 + dfs(next, graph, visited);
-    }
-    
-    return cnt;
-}
-
 int solution(int n, vector<vector<int>> results) {
     int answer = 0;
     
-    vector<vector<int>> win(n + 1), lose(n + 1);
+    vector<vector<bool>> win(n + 1, vector<bool>(n + 1, false));
     
-    for (vector<int>& r: results) {
-        win[r[0]].push_back(r[1]);
-        lose[r[1]].push_back(r[0]);
+    for (const vector<int>& r: results) {
+        win[r[0]][r[1]] = true;
     }
     
-        
+    for (int k=1; k<=n; ++k) {
+        for (int i=1; i<=n; ++i) {
+            for (int j=1; j<=n; ++j) {
+                if (win[i][k] && win[k][j]) {
+                    win[i][j] = true;
+                }
+            }
+        }
+    }
+    
     for (int i=1; i<=n; ++i) {
-        vector<bool> visited(n + 1, false);
-        int stronger = dfs(i, lose, visited);
+        int cnt = 0;
+        for (int j=1; j<=n; ++j) {
+            if (win[i][j] || win[j][i]) {
+                ++cnt;
+            }
+        }
         
-        visited.assign(n + 1, false);
-        int weaker = dfs(i, win, visited);
-        
-        if (stronger + weaker == n - 1) {
+        if (cnt == n - 1) {
             ++answer;
         }
     }
