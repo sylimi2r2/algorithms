@@ -3,12 +3,13 @@
 
 using namespace std;
 
-int steal(vector<int>& money, int start, int n) {
+int steal(vector<int>& money, int start, int end) {
     int pprev, prev, cur;
     pprev = money[start];
     prev = max(money[start], money[start + 1]);
+    cur = prev;
     
-    for (int i=start+2; i<n+start-1; ++i) {
+    for (int i=start+2; i<=end; ++i) {
         cur = max(prev, pprev + money[i]);
         pprev = prev;
         prev = cur;
@@ -20,5 +21,5 @@ int steal(vector<int>& money, int start, int n) {
 int solution(vector<int> money) {
     int n = money.size();
     
-    return max(steal(money, 0, n), steal(money, 1, n));
+    return max(steal(money, 0, n-2), steal(money, 1, n-1));
 }
