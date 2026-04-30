@@ -4,66 +4,63 @@
 
 using namespace std;
 
+struct Group {
+    int dia;
+    int iron;
+    int stone;
+};
+
 int solution(vector<int> picks, vector<string> minerals) {
-    int answer = 1251;
-    vector<int> v;
+    int answer = 0;
     
-    for (int i=0; i<3; ++i) {
-        for (int j=0; j<picks[i]; ++j) {
-            v.push_back(i);
-        }
-    }
+    int p = picks[0] + picks[1] + picks[2];
+    int limit = min((int)minerals.size(), p * 5);
     
-    int p = v.size();
-    int m = minerals.size();
+    vector<Group> groups;
     
-    do {
-        int tmp = 0;
-        int i = 0, j = 0;
-        int cnt = 0;
+    for (int i=0; i<limit; i+=5) {
+        Group g = {0, 0, 0};
         
-        while (i < p && j < m) {
-            int pick = v[i];
-            if (pick == 0) {
-                int can = min(5, m - j);
-                tmp += can;
-                j += can;
-                ++i;
-                continue;
-            }
-            
-            switch (minerals[j++][0]) {
+        for (int j=i; j<i+5 && j<limit; ++j) {
+            switch (minerals[j][0]) {
                 case 'd': {
-                    if (pick == 1) {
-                        tmp += 5;
-                    } else {
-                        tmp += 25;
-                    }
-                    
+                    ++g.dia;
                     break;
                 }
                 case 'i': {
-                    if (pick == 1) {
-                        tmp += 1;
-                    } else {
-                        tmp += 5;
-                    }
-                    
+                    ++g.iron;
                     break;
                 }
                 default: {
-                    tmp += 1;
+                    ++g.stone;
+                    break;
                 }
-            }
-            
-            if (++cnt == 5) {
-                ++i;
-                cnt = 0;
             }
         }
         
-        answer = min(answer, tmp);
-    } while (next_permutation(v.begin(), v.end()));
-        
+        groups.push_back(g);
+    }
+    
+    sort(groups.begin(), groups.end(), [](const Group& a, const Group& b) {
+        if (a.dia != b.dia)
+            return a.dia > b.dia;
+        if (a.iron != b.iron)
+            return a.iron > b.iron;
+        return a.stone > b.stone;
+    });
+    
+    for (auto& g: groups) {
+        if (picks[0] > 0) {
+            answer += g.dia + g.iron + g.stone;
+            --picks[0];
+        } else if (picks[1] > 0) {
+            answer += g.dia * 5 + g.iron + g.stone;
+            --picks[1];
+        } else {
+            answer += g.dia * 25 + g.iron * 5 + g.stone;
+            --picks[2];
+        }
+    }
+    
     return answer;
 }
